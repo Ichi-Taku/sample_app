@@ -1,1 +1,5 @@
 #2020/04/07 リスト6.31 削除
+michael:
+  name: Michael Example
+  email: michael@example.com
+  password_digest: <%= User.digest('password') %>
