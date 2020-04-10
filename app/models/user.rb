@@ -34,6 +34,7 @@ class User < ApplicationRecord
 
   # トークンがダイジェストと一致したらtrueを返す
   def authenticated?(attribute, token)
+    #self.sendが省略されている
     digest = send("#{attribute}_digest")
     return false if digest.nil?
     BCrypt::Password.new(digest).is_password?(token)
