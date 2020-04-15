@@ -1,8 +1,17 @@
 class User < ApplicationRecord
   has_many :microposts, dependent: :destroy
+  has_many :active_relationships, class_name: 'Relationship',
+                                  foreign_key: 'follower_id',
+                                  dependent: :destroy
+  has_many :passive_relationships, class_name: 'Relationship',
+                                   foreign_key: 'followed_id',
+                                   dependent: :destroy
+  has_many :following, through: :active_relationships, source: :followed
+  has_many :followers, through: :passive_relationships, source: :follower
+
 
   attr_accessor :remember_token, :activation_token, :reset_token
-  #before_save { email.downcase! }
+  # before_save { email.downcase! }
   before_save   :downcase_email
   before_create :create_activation_digest
 
@@ -12,19 +21,18 @@ class User < ApplicationRecord
   validates :email, presence: true, length: { maximum: 255 },
                     format: { with: VALID_EMAIL_REGEX },
                     uniqueness: { case_sensitive: false }
-	has_secure_password
+  has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
-
   # 渡された文字列のハッシュ値を返す
-  def User.digest(string)
+  def self.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
                                                   BCrypt::Engine.cost
     BCrypt::Password.create(string, cost: cost)
   end
-  
+
   # ランダムなトークンを返す
-  def User.new_token
+  def self.new_token
     SecureRandom.urlsafe_base64
   end
 
@@ -36,9 +44,10 @@ class User < ApplicationRecord
 
   # トークンがダイジェストと一致したらtrueを返す
   def authenticated?(attribute, token)
-    #self.sendが省略されている
+    # self.sendが省略されている
     digest = send("#{attribute}_digest")
     return false if digest.nil?
+
     BCrypt::Password.new(digest).is_password?(token)
   end
 
@@ -49,10 +58,9 @@ class User < ApplicationRecord
 
   # アカウントを有効にする
   def activate
-    #update_attribute(:activated,    true)
-    #update_attribute(:activated_at, Time.zone.now)
+    # update_attribute(:activated,    true)
+    # update_attribute(:activated_at, Time.zone.now)
     update_columns(activated: true, activated_at: Time.zone.now)
-
   end
 
   # 有効化用のメールを送信する
@@ -63,9 +71,9 @@ class User < ApplicationRecord
   # パスワード再設定の属性を設定する
   def create_reset_digest
     self.reset_token = User.new_token
-    update_columns(reset_digest:  User.digest(reset_token), reset_sent_at: Time.zone.now)
-    #update_attribute(:reset_digest,  User.digest(reset_token))
-    #update_attribute(:reset_sent_at, Time.zone.now)
+    update_columns(reset_digest: User.digest(reset_token), reset_sent_at: Time.zone.now)
+    # update_attribute(:reset_digest,  User.digest(reset_token))
+    # update_attribute(:reset_sent_at, Time.zone.now)
   end
 
   # パスワード再設定のメールを送信する
@@ -78,21 +86,40 @@ class User < ApplicationRecord
     reset_sent_at < 2.hours.ago
   end
 
-  # 試作feedの定義
-  # 完全な実装は次章の「ユーザーをフォローする」を参照
   def feed
-    Micropost.where("user_id = ?", id)
+    #Micropost.where('user_id = ?', id)
+    following_ids = "SELECT followed_id FROM relationships
+                     WHERE follower_id = :user_id"
+    Micropost.where("user_id IN (#{following_ids})
+                     OR user_id = :user_id", user_id: id)
+
+  end
+
+  # ユーザーをフォローする
+  def follow(other_user)
+    following << other_user
+  end
+
+  # ユーザーをフォロー解除する
+  def unfollow(other_user)
+    active_relationships.find_by(followed_id: other_user.id).destroy
+  end
+
+  # 現在のユーザーがフォローしてたらtrueを返す
+  def following?(other_user)
+    following.include?(other_user)
   end
 
   private
-    # メールアドレスをすべて小文字にする
-    def downcase_email
-      self.email.downcase!
-    end
 
-    # 有効化トークンとダイジェストを作成および代入する
-    def create_activation_digest
-      self.activation_token  = User.new_token
-      self.activation_digest = User.digest(activation_token)
-    end
+  # メールアドレスをすべて小文字にする
+  def downcase_email
+    email.downcase!
+  end
+
+  # 有効化トークンとダイジェストを作成および代入する
+  def create_activation_digest
+    self.activation_token  = User.new_token
+    self.activation_digest = User.digest(activation_token)
+  end
 end
