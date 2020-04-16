@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class User < ApplicationRecord
   has_many :microposts, dependent: :destroy
   has_many :active_relationships, class_name: 'Relationship',
@@ -9,7 +11,6 @@ class User < ApplicationRecord
   has_many :following, through: :active_relationships, source: :followed
   has_many :followers, through: :passive_relationships, source: :follower
 
-
   attr_accessor :remember_token, :activation_token, :reset_token
   # before_save { email.downcase! }
   before_save   :downcase_email
@@ -17,6 +18,9 @@ class User < ApplicationRecord
 
   validates :name, presence: true, length: { maximum: 50 }
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i.freeze
+
+  validates :unique_id, presence: true, length: { maximum: 20 },
+                        uniqueness: true
 
   validates :email, presence: true, length: { maximum: 255 },
                     format: { with: VALID_EMAIL_REGEX },
@@ -87,12 +91,11 @@ class User < ApplicationRecord
   end
 
   def feed
-    #Micropost.where('user_id = ?', id)
+    # Micropost.where('user_id = ?', id)
     following_ids = "SELECT followed_id FROM relationships
                      WHERE follower_id = :user_id"
     Micropost.where("user_id IN (#{following_ids})
                      OR user_id = :user_id", user_id: id)
-
   end
 
   # ユーザーをフォローする
@@ -112,7 +115,7 @@ class User < ApplicationRecord
 
   private
 
-  # メールアドレスをすべて小文字にする
+  # メール���ドレスをすべて小文字にする
   def downcase_email
     email.downcase!
   end
