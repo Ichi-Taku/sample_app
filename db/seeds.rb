@@ -17,7 +17,7 @@ User.create!(name:  name,
 		password_confirmation: password,
 		activated: true,
 		activated_at: Time.zone.now,
-    unique_id: "#{name}_#{Faker::Games::Pokemon.name}")
+    unique_id: "#{Faker::Games::Pokemon.name}#{n}")
 end
 
 users = User.order(:created_at).take(6)
