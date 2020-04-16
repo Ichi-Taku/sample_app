@@ -28,6 +28,8 @@ class User < ApplicationRecord
   has_secure_password
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
+  scope :including_replies, -> {in_reply_to IN (unique_id)}
+
   # 渡された文字列のハッシュ値を返す
   def self.digest(string)
     cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
@@ -94,8 +96,10 @@ class User < ApplicationRecord
     # Micropost.where('user_id = ?', id)
     following_ids = "SELECT followed_id FROM relationships
                      WHERE follower_id = :user_id"
+
     Micropost.where("user_id IN (#{following_ids})
-                     OR user_id = :user_id", user_id: id)
+                     OR user_id = :user_id OR in_reply_to IN (:unique_id)", user_id: id, unique_id: unique_id)
+                     
   end
 
   # ユーザーをフォローする
