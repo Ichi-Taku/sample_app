@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   delete '/logout',  to: 'sessions#destroy'
 
   resources :users do
+    collection { get "search" }
     member do
       get :following, :followers
     end

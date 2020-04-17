@@ -76,6 +76,11 @@ class UsersController < ApplicationController
     end
   end
 
+  def search
+    @users = User.find_by(name: params[:name])
+    render "#"
+  end
+
   private
 
     def user_params
