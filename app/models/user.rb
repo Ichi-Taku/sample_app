@@ -97,7 +97,7 @@ class User < ApplicationRecord
     following_ids = "SELECT followed_id FROM relationships
                      WHERE follower_id = :user_id"
 
-    Micropost.where("user_id IN (#{following_ids})
+    Micropost.where("(user_id IN (#{following_ids}) AND in_reply_to IS NULL)
                      OR user_id = :user_id OR in_reply_to IN (:unique_id)", user_id: id, unique_id: unique_id)
                      
   end

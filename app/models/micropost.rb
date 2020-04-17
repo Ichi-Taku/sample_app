@@ -22,7 +22,7 @@ class Micropost < ApplicationRecord
         reply_to = content.split(/(@|\s)/)[content.split(/(@|\s)/).index("@") + 1]
       end
       if not(reply_to.nil?)
-        in_reply_to = reply_to
+        self.in_reply_to = reply_to
       end
       #debugger
     end
