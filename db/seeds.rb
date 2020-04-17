@@ -4,7 +4,8 @@ User.create!(name:  "Example User",
 	password_confirmation: "foobar",
 	admin: true,
 	activated: true,
-	activated_at: Time.zone.now)
+	activated_at: Time.zone.now,
+  unique_id: "example_user")
 
 99.times do |n|
 name  = Faker::Name.name
@@ -15,12 +16,13 @@ User.create!(name:  name,
 		password:              password,
 		password_confirmation: password,
 		activated: true,
-		activated_at: Time.zone.now)
+		activated_at: Time.zone.now,
+    unique_id: "#{Faker::Games::Pokemon.name}#{n}")
 end
 
 users = User.order(:created_at).take(6)
 50.times do
-  content = Faker::Lorem.sentence(5)
+  content = Faker::Lorem.sentence(word_count: 3)
   users.each { |user| user.microposts.create!(content: content) }
 end
 
