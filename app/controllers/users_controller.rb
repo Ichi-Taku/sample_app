@@ -65,11 +65,22 @@ class UsersController < ApplicationController
     render 'show_follow'
   end
 
+  #オートコンプリート用、@以降の文字列を検索して返してくれる
+  def auto_complete
+    @unique_id = params[:term].match(/@[^\s]+.*/).to_s
+    @unique_id.delete!("@")
+    if !@unique_id.nil?
+      @unique_ids = User.select(:unique_id).where("unique_id LIKE '#{@unique_id}%'").order(:unique_id)
+      #debugger
+      render json: @unique_ids.to_json
+    end
+  end
+
   private
 
     def user_params
       params.require(:user).permit(:name, :email, :password,
-                                  :unique_id, :password_confirmation)
+                                   :unique_id, :password_confirmation)
     end
     
 =begin
