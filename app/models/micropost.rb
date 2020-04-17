@@ -24,6 +24,7 @@ class Micropost < ApplicationRecord
       if not(reply_to.nil?)
         in_reply_to = reply_to
       end
+      #debugger
     end
 
 end

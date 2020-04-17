@@ -1,9 +1,7 @@
 <li id="micropost-<%= micropost.id %>">
   <%= link_to gravatar_for(micropost.user, size: 50), micropost.user %>
   <span class="user"><%= link_to micropost.user.name, micropost.user %></span>
-  <% if not(micropost.in_reply_to.nil?) %>
-    <span><%= "to Me" %></span>
-  <%end%>
+  <span><%= "@#{micropost.user.unique_id}" %></span>
   <span class="content">
     <%= micropost.content %>
     <%= image_tag micropost.picture.url if micropost.picture? %>
