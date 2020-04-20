@@ -20,6 +20,7 @@ gem 'therubyracer'
 gem 'jquery-ui-rails'
 
 group :development, :test do
+  gem 'rspec-rails', '~> 3.8'
   gem 'sqlite3', '1.3.13'
   gem 'byebug',  '9.0.6', platform: :mri
 end
