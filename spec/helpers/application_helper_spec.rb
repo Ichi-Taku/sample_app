@@ -6,5 +6,8 @@ RSpec.describe ApplicationHelper, type: :helper do
     it `returns "Ruby on Rails Tutorial Sample App"` do
       expect(full_title("")).to eq "Ruby on Rails Tutorial Sample App"
     end
+    it `returns "Help | Ruby on Rails Tutorial Sample App"` do
+      expect(full_title("Help")).to eq "Help | Ruby on Rails Tutorial Sample App"
+    end
   end
 end
