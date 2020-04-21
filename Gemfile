@@ -19,6 +19,9 @@ gem 'therubyracer'
 
 gem 'jquery-ui-rails'
 
+gem 'capybara'
+gem 'webdrivers'
+
 group :development, :test do
   gem 'rspec-rails', '~> 3.8'
   gem 'sqlite3', '1.3.13'
