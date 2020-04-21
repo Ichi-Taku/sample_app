@@ -51,8 +51,8 @@ RSpec.configure do |config|
     driven_by :selenium_chrome_headless
   end
 =end
-config.include FactoryBot::Syntax::Methods
-config.include ApplicationHelper #追加
+#config.include FactoryBot::Syntax::Methods
+#config.include ApplicationHelper #追加
 # The settings below are suggested to provide a good initial experience
 # with RSpec, but feel free to customize to your heart's content.
 =begin
