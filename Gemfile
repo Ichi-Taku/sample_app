@@ -40,6 +40,8 @@ group :test do
   gem 'guard-minitest',           '2.4.4'
   gem 'capybara',                 '2.13'
   gem 'webdrivers'
+  gem 'factory_bot_rails'
+  gem 'shoulda-matchers'
 end
 
 group :production do

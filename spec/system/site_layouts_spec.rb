@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "SiteLayouts", type: :system do
-  include ApplicationHelper
+  #include ApplicationHelper
   context `access to root_path` do
     before do
       visit(root_path)
