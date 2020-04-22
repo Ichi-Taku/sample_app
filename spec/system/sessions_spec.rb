@@ -20,6 +20,16 @@ RSpec.describe "Sessions", type: :system do
       is_expected.to have_link 'Profile', href: user_path(user)
       is_expected.to have_link 'Log out', href: logout_path
     end
+
+    it 'log out after log in' do
+      click_link 'Account'
+      click_link 'Log out'
+      is_expected.to have_current_path root_path
+      is_expected.to have_link 'Log in', href: login_path
+      is_expected.to_not have_link 'Account'
+      is_expected.to_not have_link nil, href: logout_path
+      is_expected.to_not have_link nil, href: user_path(user)
+    end
   end
 
   describe 'enter an invalid values' do
