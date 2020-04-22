@@ -16,12 +16,13 @@ RSpec.describe "AccessToUsers", type: :request do
         end.to change(User, :count).by(1)
       end
       context `added a user` do
-        subject { response }
         before { post signup_path, params: { user: attributes_for(:user) } }
+        subject { response }
         #it { expect(assigns(:user).activated?).to eq false }
         #it { expect(is_logged_in?).to eq false }
         it { is_expected.to redirect_to root_path }
         it { is_expected.to have_http_status 302 }
+        it { expect(is_logged_in?).to eq false }
       end
     end
     context `invalid request` do
