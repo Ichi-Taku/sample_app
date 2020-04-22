@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   #facrory botが存在するかのテストです
-  it 'has a valid factory bot' do
+  it `has a valid factory bot` do
     expect(build(:user)).to be_valid
   end
 
@@ -32,10 +32,19 @@ RSpec.describe User, type: :model do
         user = build(:user, email: 'duplicatemail@example.com')
         expect(user).to_not be_valid
       end
-      it 'is case insensitive in email' do
-        user = build(:user, email: 'ORIGINAL@EXAMPLE.COM')
-        expect(user).to be_valid
+      it `is case insensitive in email` do
+        user = build(:user, email: 'DUPLICATEMAIL@EXAMPLE.COM')
+        expect(user).to_not be_valid
       end
     end
+    describe `before save` do
+      describe `#email_downcase` do
+        let!(:user) { create(:user, email: 'TESTMAIL@EXAMPLE.COM') }
+        it `saved email to downcase` do
+          expect(user.reload.email).to eq "testmail@example.com"
+        end
+      end
+    end
+
   end
 end
