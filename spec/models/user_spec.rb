@@ -45,10 +45,18 @@ RSpec.describe User, type: :model do
         end
       end
     end
-    it 'is invalid with a blank password' do
+    it `is invalid with a blank password` do
       user = build(:user, password: ' ' * 6)
       expect(user).to_not be_valid
     end
     it { is_expected.to validate_length_of(:password).is_at_least(6) }
+  end
+
+  context `does not exist remember_digest` do
+    let(:user) {create(:user)}
+    subject { user.authenticated?(:remember, "") }
+    it `does not have a remember_digest` do
+      is_expected.to eq false
+    end
   end
 end
