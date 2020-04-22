@@ -45,6 +45,10 @@ RSpec.describe User, type: :model do
         end
       end
     end
-
+    it 'is invalid with a blank password' do
+      user = build(:user, password: ' ' * 6)
+      expect(user).to_not be_valid
+    end
+    it { is_expected.to validate_length_of(:password).is_at_least(6) }
   end
 end
