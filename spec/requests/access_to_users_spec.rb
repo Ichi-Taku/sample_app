@@ -1,6 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe "AccessToUsers", type: :request do
+  describe `signup_path"#new"` do
+    it `responds successfully` do
+      get signup_path
+      expect(response).to have_http_status 200
+    end
+  end
+  
   describe `Users #create` do
     context `POST valid request` do
       it `adds a user` do
