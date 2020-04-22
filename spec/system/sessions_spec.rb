@@ -5,6 +5,23 @@ RSpec.describe "Sessions", type: :system do
     visit login_path
   end
 
+  describe 'enter an valid values' do
+    let!(:user) { create(:user, email: 'loginuser@example.com', password: 'password', unique_id: "loginuserid") }
+    before do
+      fill_in 'Email', with: 'loginuser@example.com'
+      fill_in 'Password', with: 'password'
+      click_button 'Log in'
+    end
+    subject { page }
+    it 'log in' do
+      is_expected.to have_current_path user_path(user)
+      is_expected.to_not have_link nil, href: login_path
+      click_link 'Account'
+      is_expected.to have_link 'Profile', href: user_path(user)
+      is_expected.to have_link 'Log out', href: logout_path
+    end
+  end
+
   describe 'enter an invalid values' do
     before do
       fill_in 'Email', with: ''
