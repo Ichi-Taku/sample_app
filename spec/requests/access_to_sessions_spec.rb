@@ -17,5 +17,13 @@ RSpec.describe "AccessToSessions", type: :request do
       expect(response).to redirect_to root_path
       expect(is_logged_in?).to be_falsey
     end
+
+    context `after logout` do
+      it `redirect to root_path` do
+        delete logout_path
+        expect(response).to redirect_to root_path
+      end
+    end
   end
+
 end
