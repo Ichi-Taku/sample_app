@@ -84,4 +84,16 @@ RSpec.describe "Users", type: :system do
       end
     end
   end
+
+  describe `friendly forwarding` do
+    before do
+      visit edit_user_path(user)
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: "password"
+      click_button 'Log in'
+    end
+    it `successful edit with friendly forwarding` do
+      expect(page).to have_current_path edit_user_path(user)
+    end
+  end
 end
