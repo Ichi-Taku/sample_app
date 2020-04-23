@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Users", type: :system do
+  let!(:user) { create(:user) }
   describe `user create a new account` do
     context `enter an valid values` do
       before do
@@ -39,7 +40,6 @@ RSpec.describe "Users", type: :system do
   end
 
   describe `user edit my account data` do
-    let!(:user) { create(:user) }
     before do
       visit login_path
       fill_in 'Email', with: user.email
@@ -82,6 +82,15 @@ RSpec.describe "Users", type: :system do
         expect(user.email).to eq email
         #expect()
       end
+    end
+  end
+
+  describe `should redirect edit when not logged in` do
+    before { visit edit_user_path(user) }
+    subject { page }
+    it `redirect to login_url` do
+      is_expected.to have_selector(".alert", text: "Please log in.")
+      #is_expected.to have_current_path login_url
     end
   end
 end

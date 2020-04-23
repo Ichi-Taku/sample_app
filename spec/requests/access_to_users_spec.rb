@@ -39,4 +39,19 @@ RSpec.describe "AccessToUsers", type: :request do
       end
     end
   end
+
+=begin 
+  describe `Users #edit` do
+    let!(:user) { create(:user) }
+    context `not logged in` do
+      before do
+        patch user_path(user), params: { user: { name: user.name,
+                                                  email: user.email } }
+      end
+      it `redirect to login_url` do
+        expect(page).to have_current_path login_url
+      end
+    end
+  end
+=end  
 end
