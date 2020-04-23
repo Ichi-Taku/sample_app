@@ -26,4 +26,24 @@ RSpec.describe "AccessToSessions", type: :request do
     end
   end
 
+  describe `Remember me` do
+    context `POST remember_me as 1` do
+      it `remembers cookies` do
+        post login_path, params: { session: { email: user.email,
+                                              password: user.password,
+                                              remember_me: 1 } }
+        expect(response.cookies['remember_token']).to be_truthy
+      end
+    end
+
+    context `POST remember_me as 0` do
+      it `does not remember cookies` do
+        post login_path, params: { session: { email: user.email,
+                                              password: user.password,
+                                              remember_me: 0 } }
+        expect(response.cookies['remember_token']).to eq nil
+      end
+    end
+  end
+
 end
