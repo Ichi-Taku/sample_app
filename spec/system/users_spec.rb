@@ -37,4 +37,27 @@ RSpec.describe "Users", type: :system do
       end
     end
   end
+
+  describe `user edit my account data` do
+    let!(:user) { create(:user) }
+    before do
+      visit login_path
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: "password"
+      click_button 'Log in'
+
+      visit edit_user_path(user)
+      fill_in 'Name', with: ''
+      fill_in 'Email', with: ''
+      fill_in "UserID", with: ""
+      fill_in 'Password', with: ''
+      fill_in 'Password confirmation', with: ''
+      click_button 'Save changes'
+    end
+    subject { page }
+    it `is not unsuccessful edit` do
+      #is_expected.to have_current_path "users/edit"
+      is_expected.to have_selector('.alert', text: 'The form contains 4 errors.')
+    end
+  end
 end
