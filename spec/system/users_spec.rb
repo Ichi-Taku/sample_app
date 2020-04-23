@@ -45,19 +45,43 @@ RSpec.describe "Users", type: :system do
       fill_in 'Email', with: user.email
       fill_in 'Password', with: "password"
       click_button 'Log in'
-
-      visit edit_user_path(user)
-      fill_in 'Name', with: ''
-      fill_in 'Email', with: ''
-      fill_in "UserID", with: ""
-      fill_in 'Password', with: ''
-      fill_in 'Password confirmation', with: ''
-      click_button 'Save changes'
     end
     subject { page }
-    it `is not unsuccessful edit` do
-      #is_expected.to have_current_path "users/edit"
-      is_expected.to have_selector('.alert', text: 'The form contains 4 errors.')
+
+    context `send unsuccessful form` do
+      before do
+        visit edit_user_path(user)
+        fill_in 'Name', with: ''
+        fill_in 'Email', with: ''
+        fill_in "UserID", with: ""
+        fill_in 'Password', with: ''
+        fill_in 'Password confirmation', with: ''
+        click_button 'Save changes'
+      end
+
+      it `is unsuccessful edit` do
+        #is_expected.to have_current_path "users/edit"
+        is_expected.to have_selector('.alert', text: 'The form contains 4 errors.')
+      end
+    end
+
+    context `send successfull form` do
+      let!(:name) { "Foo Bar" }
+      let!(:email) { "foo@bar.com" }
+      before do
+        visit edit_user_path(user)
+        fill_in 'Name', with: name
+        fill_in 'Email', with: email
+        click_button 'Save changes'
+        user.reload
+      end
+
+      it `is successful edit` do
+        is_expected.to have_selector(".alert", text: "Profile updated")
+        expect(user.name).to eq name
+        expect(user.email).to eq email
+        #expect()
+      end
     end
   end
 end
