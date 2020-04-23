@@ -84,13 +84,4 @@ RSpec.describe "Users", type: :system do
       end
     end
   end
-
-  describe `should redirect edit when not logged in` do
-    before { visit edit_user_path(user) }
-    subject { page }
-    it `redirect to login_url` do
-      is_expected.to have_selector(".alert", text: "Please log in.")
-      #is_expected.to have_current_path login_url
-    end
-  end
 end

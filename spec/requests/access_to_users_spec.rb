@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe "AccessToUsers", type: :request do
+  let!(:user) { create(:user) }
+
   describe `signup_path"#new"` do
     it `responds successfully` do
       get signup_path
@@ -37,6 +39,23 @@ RSpec.describe "AccessToUsers", type: :request do
           post signup_path, params: { user: user_params }
         end.to change(User, :count).by(0)
       end
+    end
+  end
+
+  describe `should redirect edit when not logged in` do
+    before { get edit_user_path(user) }
+    subject { page }
+    it `redirect to login_url` do
+      expect(response).to redirect_to login_url
+    end
+  end
+
+  describe `should redirect update when not logged in` do
+    before { patch user_path(user), params: { user: { name: user.name,
+                                              email: user.email } } }
+    subject { page }
+    it `redirect to login_url` do
+      expect(response).to redirect_to login_url
     end
   end
 
