@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "AccessToUsers", type: :request do
   let!(:user) { create(:user) }
+  let!(:other_user) { create(:user) }
 
   describe `signup_path"#new"` do
     it `responds successfully` do
@@ -59,18 +60,32 @@ RSpec.describe "AccessToUsers", type: :request do
     end
   end
 
-=begin 
-  describe `Users #edit` do
-    let!(:user) { create(:user) }
-    context `not logged in` do
+  describe `#edit` do
+    before do
+      post login_path, params: { session: { email: other_user.email,
+                                            password: other_user.password} }
+    end
+    context `should redirect edit when logged in as wrong user` do
+      before { get edit_user_path(user) }
+      it `redirect to root_url` do
+        expect(response).to redirect_to root_url
+      end
+    end
+  end
+
+  describe `#update` do
+  before do
+    post login_path, params: { session: { email: other_user.email,
+                                          password: other_user.password} }
+  end
+    context `should redirect update when logged in as wrong user` do
       before do
         patch user_path(user), params: { user: { name: user.name,
                                                   email: user.email } }
       end
-      it `redirect to login_url` do
-        expect(page).to have_current_path login_url
+      it `redirect to root_url` do
+        expect(response).to redirect_to root_url
       end
     end
-  end
-=end  
+  end 
 end
