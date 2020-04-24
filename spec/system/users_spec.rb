@@ -120,4 +120,27 @@ RSpec.describe "Users", type: :system do
       expect(page).to have_current_path edit_user_path(user)
     end
   end
+
+  describe `delete user` do
+    context `logged in admin` do
+      before do
+        visit login_path
+        fill_in 'Email', with: user.email
+        fill_in 'Password', with: user.password
+        click_button 'Log in'
+        click_link "Users"
+      end
+      subject { page }
+      it `has delete of other_users by admin` do
+        is_expected.to have_current_path users_path
+        is_expected.to have_selector ".pagination"
+        User.paginate(page: 1).each do |u|
+          #is_expected.to have_link user.name, href: user_path(user)
+          unless u == user
+            is_expected.to have_link "delete", href: user_path(u)
+          end
+        end
+      end
+    end
+  end
 end
