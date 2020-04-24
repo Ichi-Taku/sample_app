@@ -74,10 +74,10 @@ RSpec.describe "AccessToUsers", type: :request do
   end
 
   describe `#update` do
-  before do
-    post login_path, params: { session: { email: other_user.email,
-                                          password: other_user.password} }
-  end
+    before do
+      post login_path, params: { session: { email: other_user.email,
+                                            password: other_user.password} }
+    end
     context `should redirect update when logged in as wrong user` do
       before do
         patch user_path(user), params: { user: { name: user.name,
@@ -87,5 +87,15 @@ RSpec.describe "AccessToUsers", type: :request do
         expect(response).to redirect_to root_url
       end
     end
+    context `other_user edited admin attribute` do
+      before do
+        patch user_path(other_user), params: {
+                          user: { password:              "password",
+                                  password_confirmation: "password",
+                                  admin: 1 } }
+      end
+      it { expect(other_user.reload.admin?).to be_falsey }
+    end
   end 
+
 end
