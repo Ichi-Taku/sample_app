@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe "AccessToUsers", type: :request do
   let!(:user) { create(:user) }
   let!(:other_user) { create(:other_user) }
-
+  
   describe `signup_path"#new"` do
     it `responds successfully` do
       get signup_path
@@ -103,6 +103,7 @@ RSpec.describe "AccessToUsers", type: :request do
       before { delete user_path(user) }
       it { expect(response).to redirect_to login_url }
     end
+
     context `not admin user used destroy` do
       before do
         post login_path, params: { session: { email: other_user.email,
@@ -110,6 +111,15 @@ RSpec.describe "AccessToUsers", type: :request do
         delete user_path(user)
       end
       it { expect(response).to redirect_to root_url }
+    end
+
+    context `delete user` do
+      before do
+        post login_path, params: { session: { email: user.email,
+                                              password: user.password} }
+      end
+
+      it { expect{delete user_path(other_user)}.to change(User, :count).by(-1) }
     end
   end
 
