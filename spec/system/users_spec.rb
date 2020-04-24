@@ -2,6 +2,30 @@ require 'rails_helper'
 
 RSpec.describe "Users", type: :system do
   let!(:user) { create(:user) }
+
+  describe `users pagination` do
+    before do
+      visit login_path
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: "password"
+      click_button 'Log in'
+      click_link "Users"
+    end
+    subject { page }
+    it `has my account page link` do
+      is_expected.to have_current_path users_path
+      is_expected.to have_selector ".pagination"
+      #is_expected.to have_link user.name, href: user_path(user)
+    end
+  end
+
+  describe `not logged in` do
+    before { visit users_path }
+    it `should redirect index` do
+      expect(page).to have_current_path login_path
+    end
+  end
+
   describe `user create a new account` do
     context `enter an valid values` do
       before do
