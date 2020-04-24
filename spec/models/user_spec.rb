@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  #facrory botが存在するかのテストです
+  #facrory botが存在するかのテスト
   it `has a valid factory bot` do
     expect(build(:user)).to be_valid
   end
@@ -59,4 +59,10 @@ RSpec.describe User, type: :model do
       is_expected.to eq false
     end
   end
+
+  context `a user has nil digest` do
+    let(:user) {create(:user)}
+    it { expect(user.authenticated?(:remember, '')).to eq false }
+  end
+
 end
