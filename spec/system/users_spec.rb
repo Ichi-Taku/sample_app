@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Users", type: :system do
   let!(:user) { create(:user) }
+  let!(:other_user) { create(:other_user) }
 
   describe `users pagination` do
     before do
@@ -135,11 +136,24 @@ RSpec.describe "Users", type: :system do
         is_expected.to have_current_path users_path
         is_expected.to have_selector ".pagination"
         User.paginate(page: 1).each do |u|
-          #is_expected.to have_link user.name, href: user_path(user)
+          #is_expected.to have_link user.name, href: user_path(u)
           unless u == user
             is_expected.to have_link "delete", href: user_path(u)
           end
         end
+      end
+    end
+
+    context `logged in other_user` do
+      before do
+        visit login_path
+        fill_in 'Email', with: other_user.email
+        fill_in 'Password', with: other_user.password
+        click_button 'Log in'
+        click_link "Users"
+      end
+      it `does not have delete of other_users by other_user` do
+        is_expected.not_to have_link "delete"
       end
     end
   end
