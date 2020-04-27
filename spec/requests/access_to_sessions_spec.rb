@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "AccessToSessions", type: :request do
   let!(:user) { create(:user) }
-  let!(:falsy_user) { build(:falsy_user) }
+  let!(:falsy_user) { create(:falsy_user) }
   describe 'POST #create' do
     it 'log in and redirect to detail page' do
       post login_path, params: { session: { email: user.email,
@@ -22,14 +22,22 @@ RSpec.describe "AccessToSessions", type: :request do
                                               password_confirmation: other_user.password } }
       
 =end
-        post signup_path, params: { user: attributes_for(:falsy_user) }
       end
+      subject { is_logged_in? }
       it { expect(falsy_user.activated?).to eq false }
       it `is not logged in` do
         post login_path, params: { session: { email: falsy_user.email,
                                               password: falsy_user.password } }
-        expect(is_logged_in?).to be_falsey
+        is_expected.to be_falsey
+        get edit_account_activation_path("invalid token", email: falsy_user.email)
+        is_expected.to be_falsey
+        get edit_account_activation_path(falsy_user.activation_token, email: 'wrong')
+        is_expected.to be_falsey
+        get edit_account_activation_path(falsy_user.activation_token, email: falsy_user.email)
+        #falsy_user.reload
+        #is_expected.to be_truthy
       end
+
     end
   end
 
