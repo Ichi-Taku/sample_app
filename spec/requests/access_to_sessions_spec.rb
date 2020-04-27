@@ -2,12 +2,34 @@ require 'rails_helper'
 
 RSpec.describe "AccessToSessions", type: :request do
   let!(:user) { create(:user) }
+  let!(:falsy_user) { build(:falsy_user) }
   describe 'POST #create' do
     it 'log in and redirect to detail page' do
       post login_path, params: { session: { email: user.email,
                                             password: user.password } }
       expect(response).to redirect_to user_path(user)
       expect(is_logged_in?).to be_truthy
+    end
+
+    context `valid signup information with account activation` do
+      before do
+
+=begin         
+        post signup_path, params: { session: { name: other_user.name,
+                                              email: other_user.email,
+                                              password: other_user.password,
+                                              unique_id: other_user.unique_id,
+                                              password_confirmation: other_user.password } }
+      
+=end
+        post signup_path, params: { user: attributes_for(:falsy_user) }
+      end
+      it { expect(falsy_user.activated?).to eq false }
+      it `is not logged in` do
+        post login_path, params: { session: { email: falsy_user.email,
+                                              password: falsy_user.password } }
+        expect(is_logged_in?).to be_falsey
+      end
     end
   end
 
@@ -17,7 +39,7 @@ RSpec.describe "AccessToSessions", type: :request do
       expect(response).to redirect_to root_path
       expect(is_logged_in?).to be_falsey
     end
-
+    
     context `after logout` do
       it `redirect to root_path` do
         delete logout_path

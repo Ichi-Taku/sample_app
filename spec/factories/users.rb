@@ -16,4 +16,13 @@ FactoryBot.define do
     activated { true }
     admin { 0 }
   end
+
+  factory :falsy_user, class: User do
+    name { 'Example Falsy User' }
+    sequence(:email) { |n| "falsy_user_#{n}@example.com" }
+    password { "password" }
+    sequence(:unique_id) { |n| "falsy_user#{n}" }
+    activated { false }
+    admin { 0 }
+  end
 end
