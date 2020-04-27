@@ -19,10 +19,14 @@ RSpec.describe "AccessToUsers", type: :request do
         end.to change(User, :count).by(1)
       end
       context `added a user` do
-        before { post signup_path, params: { user: attributes_for(:user) } }
+        before do
+          ActionMailer::Base.deliveries.clear
+          post signup_path, params: { user: attributes_for(:user) }
+        end
         subject { response }
         #it { expect(assigns(:user).activated?).to eq false }
         #it { expect(is_logged_in?).to eq false }
+        it { expect(ActionMailer::Base.deliveries.size).to eq 1 }
         it { is_expected.to redirect_to root_path }
         it { is_expected.to have_http_status 302 }
         it { expect(is_logged_in?).to eq false }
