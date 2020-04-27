@@ -65,4 +65,14 @@ RSpec.describe User, type: :model do
     it { expect(user.authenticated?(:remember, '')).to eq false }
   end
 
+  context `user was destroyed` do
+    let!(:user) { create(:user) }
+    before { user.microposts.create!(content: "Lorem ipsum") }
+    it `associate user` do
+      expect do
+        user.destroy
+      end.to change(Micropost, :count).by(-1)
+    end
+  end
+
 end
