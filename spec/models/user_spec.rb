@@ -82,6 +82,7 @@ RSpec.describe User, type: :model do
     it do
       user1.follow(user2)
       expect(user1.following?(user2)).to eq true
+      expect(user2.followers.include?(user1)).to eq true
     end
   end
 
