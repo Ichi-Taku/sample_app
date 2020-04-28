@@ -4,15 +4,16 @@ RSpec.describe "MicropostInterfaces", type: :request do
   let!(:user1) { create(:user) }
   let!(:user2) { create(:other_user) }
   let!(:user3) { create(:taro) }
+  let!(:content) { "This micropost really ties the room together" }
+  let!(:picture) { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec/fixtures/rails.png'), 'image/png') }
 
   before do
     allow_any_instance_of(ActionDispatch::Request)
         .to receive(:session).and_return(user_id: user1.id)
-    #session[:user_id] = user_id
     get root_path
   end
 
-  describe `interface` do
+  describe `micropost interface` do
     context `invalid post` do
       it `shows error_massage` do
         expect do
@@ -23,8 +24,6 @@ RSpec.describe "MicropostInterfaces", type: :request do
     end
 
     context `valid post` do
-      let!(:content) { "This micropost really ties the room together" }
-      let!(:picture) { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec/fixtures/rails.png'), 'image/png') }
       it `shows post text` do
         expect do
           post microposts_path, params: { micropost: { content: content,
@@ -37,8 +36,6 @@ RSpec.describe "MicropostInterfaces", type: :request do
     end
 
     context `delete post` do
-      let!(:content) { "This micropost really ties the room together" }
-      let!(:picture) { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec/fixtures/rails.png'), 'image/png') }
       before do
           post microposts_path, params: { micropost: { content: content,
           picture: picture } }
@@ -57,6 +54,30 @@ RSpec.describe "MicropostInterfaces", type: :request do
       before { get user_path(user2) }
       #deleteはログアウト時にも使わている
       it { expect(response.body).not_to include "You sure?" }
+    end
+  end
+
+  describe `micropost sidebar count` do
+    before do
+      allow_any_instance_of(ActionDispatch::Request)
+          .to receive(:session).and_return(user_id: user3.id)
+      get root_path
+    end
+    subject { response.body }
+    context `does not have micropost` do
+      it `has no micropost` do
+        is_expected.to include "0 microposts"
+      end
+    end
+    context `have 1 micropost` do
+      before do
+        post microposts_path, params: { micropost: { content: content,
+                                                     picture: picture } }
+        get root_path
+        end
+      it `has 1 micropost` do
+        is_expected.to include "1 micropost"
+      end
     end
   end
 end
