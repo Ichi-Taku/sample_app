@@ -75,4 +75,14 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe `follow and unfollow` do
+    let!(:user1) { create(:user) }
+    let!(:user2) { create(:other_user) }
+    it { expect(user1.following?(user2)).to eq false }
+    it do
+      user1.follow(user2)
+      expect(user1.following?(user2)).to eq true
+    end
+  end
+
 end
