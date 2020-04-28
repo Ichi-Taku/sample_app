@@ -21,13 +21,14 @@ RSpec.describe "MicropostInterfaces", type: :request do
         expect(response.body).to include "error_explanation"
       end
     end
+    
     context `valid post` do
       let!(:content) { "This micropost really ties the room together" }
       let!(:picture) { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec/fixtures/rails.png'), 'image/png') }
       it `shows post text` do
         expect do
           post microposts_path, params: { micropost: { content: content,
-                                                       picture: picture} }
+                                                       picture: picture } }
         end.to change{ Micropost.count }
         expect(response).to redirect_to root_url
         get root_url
@@ -36,12 +37,19 @@ RSpec.describe "MicropostInterfaces", type: :request do
     end
 
     context `delete post` do
+      let!(:content) { "This micropost really ties the room together" }
+      let!(:picture) { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec/fixtures/rails.png'), 'image/png') }
+      before do
+          post microposts_path, params: { micropost: { content: content,
+          picture: picture } }
+          get root_url
+      end
       let!(:first_post) { user1.microposts.paginate(page: 1).first }
       it `counts decrease` do
         expect(response.body).to include "delete"
         expect do
           delete micropost_path(first_post)
-        end.to change{ Micropost.count }
+        end.to change{ Micropost.count }.by(-1)
       end
     end
   end
