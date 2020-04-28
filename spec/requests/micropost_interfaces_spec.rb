@@ -21,7 +21,7 @@ RSpec.describe "MicropostInterfaces", type: :request do
         expect(response.body).to include "error_explanation"
       end
     end
-    
+
     context `valid post` do
       let!(:content) { "This micropost really ties the room together" }
       let!(:picture) { Rack::Test::UploadedFile.new(File.join(Rails.root, 'spec/fixtures/rails.png'), 'image/png') }
@@ -46,11 +46,17 @@ RSpec.describe "MicropostInterfaces", type: :request do
       end
       let!(:first_post) { user1.microposts.paginate(page: 1).first }
       it `counts decrease` do
-        expect(response.body).to include "delete"
+        expect(response.body).to include "You sure?"
         expect do
           delete micropost_path(first_post)
         end.to change{ Micropost.count }.by(-1)
       end
+    end
+
+    context `another users page` do
+      before { get user_path(user2) }
+      #deleteはログアウト時にも使わている
+      it { expect(response.body).not_to include "You sure?" }
     end
   end
 end
