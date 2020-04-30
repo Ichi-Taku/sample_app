@@ -86,4 +86,41 @@ RSpec.describe User, type: :model do
     end
   end
 
+  describe `shows microposts` do
+    let!(:user1) { create(:user) }
+    let!(:user2) { create(:other_user) }
+    let!(:user3) { create(:taro) }
+    before do
+      create_list(:post1, 30, user_id: user1.id)
+      create_list(:post2, 30, user_id: user2.id)
+      create_list(:post3, 30, user_id: user3.id)
+
+      Relationship.create(follower_id: user1.id, followed_id: user2.id)
+      Relationship.create(follower_id: user2.id, followed_id: user3.id)
+      Relationship.create(follower_id: user3.id, followed_id: user1.id)
+      allow_any_instance_of(ActionDispatch::Request)
+          .to receive(:session).and_return(user_id: user1.id)
+    end
+
+    context `shows post` do
+      it `includes my followers posts` do
+        user1.microposts.each do |post_following|
+          expect(user3.feed.include?(post_following)).to eq true
+        end
+      end
+
+      it `includes my posts` do
+        user1.microposts.each do |post_self|
+          expect(user1.feed.include?(post_self)).to eq true
+        end
+      end
+
+      it `does not includes my not followers post` do
+        user1.microposts.each do |post_following|
+          expect(user2.feed.include?(post_following)).to eq false
+        end
+      end
+    end
+  end
+
 end
