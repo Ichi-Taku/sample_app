@@ -65,4 +65,13 @@ RSpec.describe "Followings", type: :request do
       end
     end
   end
+
+  describe `Home Page` do
+    before { get root_path }
+    it `shows feed` do
+      user1.feed.paginate(page: 1).each do |micropost|
+        expect(response.body).to include CGI.escapeHTML(micropost.content)
+      end
+    end
+  end
 end
