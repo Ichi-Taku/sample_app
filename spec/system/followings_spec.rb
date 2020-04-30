@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe "Followings", type: :system do
-  before do
-    driven_by(:rack_test)
-  end
-
-  pending "add some scenarios (or delete) #{__FILE__}"
+  let!(:user) { create(:user, :with_post) }
+  let!(:user2) { create(:other_user, :with_post) }
+  let!(:user3) { create(:taro, :with_post) }
 end

@@ -8,11 +8,13 @@ FactoryBot.define do
     admin { 1 }
 
     trait :with_post do
-      after(:create) do 
-        create(:post1)
-        #create(:relationship1)
+      (1..30).each do |num|
+        after(:create) do 
+          create(:post1)
+        end
       end
     end
+    
   end
 
   factory :other_user, class: User do
@@ -24,9 +26,10 @@ FactoryBot.define do
     admin { 0 }
 
     trait :with_post do
-      after(:create) do 
-        create(:post2)
-        #create(:relationship2)
+      (1..30).each do |num|
+        after(:create) do 
+          create(:post2)
+        end
       end
     end
   end
@@ -40,11 +43,10 @@ FactoryBot.define do
     admin { 0 }
 
     trait :with_post do
-      after(:create) do 
-        create(:post3)
-        create(:relationship1)
-        create(:relationship1)
-        create(:relationship3)
+      (1..30).each do |num|
+        after(:create) do 
+          create(:post3)
+        end
       end
     end
   end
