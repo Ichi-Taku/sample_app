@@ -10,9 +10,9 @@ RSpec.describe "Users", type: :request do
     create_list(:post3, 30, user_id: user3.id)
 
     Relationship.create(follower_id: user.id, followed_id: user3.id)
+    Relationship.create(follower_id: user.id, followed_id: user2.id)
     Relationship.create(follower_id: user2.id, followed_id: user3.id)
     Relationship.create(follower_id: user3.id, followed_id: user.id)
-    debugger
   end
 
 
