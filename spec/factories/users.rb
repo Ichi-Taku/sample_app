@@ -10,7 +10,7 @@ FactoryBot.define do
     trait :with_post do
       after(:create) do 
         create(:post1)
-        create(:relationship1)
+        #create(:relationship1)
       end
     end
   end
@@ -26,7 +26,7 @@ FactoryBot.define do
     trait :with_post do
       after(:create) do 
         create(:post2)
-        create(:relationship2)
+        #create(:relationship2)
       end
     end
   end
@@ -42,6 +42,8 @@ FactoryBot.define do
     trait :with_post do
       after(:create) do 
         create(:post3)
+        create(:relationship1)
+        create(:relationship1)
         create(:relationship3)
       end
     end
