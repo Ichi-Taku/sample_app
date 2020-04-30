@@ -1,13 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe "Users", type: :request do
-  let!(:user) { create(:user, :with_post) }
-  let!(:user2) { create(:other_user, :with_post) }
-  let!(:user3) { create(:taro, :with_post) }
+  let!(:user) { create(:user) }
+  let!(:user2) { create(:other_user) }
+  let!(:user3) { create(:taro) }
   before do
+    create_list(:post1, 30, user_id: user.id)
+    create_list(:post2, 30, user_id: user2.id)
+    create_list(:post3, 30, user_id: user3.id)
+
     Relationship.create(follower_id: user.id, followed_id: user3.id)
     Relationship.create(follower_id: user2.id, followed_id: user3.id)
     Relationship.create(follower_id: user3.id, followed_id: user.id)
+    debugger
   end
 
 

@@ -6,14 +6,6 @@ FactoryBot.define do
     sequence(:unique_id) { |n| "user#{n}" }
     activated { true }
     admin { 1 }
-
-    trait :with_post do
-      (1..30).each do |num|
-        after(:create) do 
-          create(:post1)
-        end
-      end
-    end
     
   end
 
@@ -25,13 +17,6 @@ FactoryBot.define do
     activated { true }
     admin { 0 }
 
-    trait :with_post do
-      (1..30).each do |num|
-        after(:create) do 
-          create(:post2)
-        end
-      end
-    end
   end
 
   factory :taro, class: User do
@@ -42,13 +27,6 @@ FactoryBot.define do
     activated { true }
     admin { 0 }
 
-    trait :with_post do
-      (1..30).each do |num|
-        after(:create) do 
-          create(:post3)
-        end
-      end
-    end
   end
 
   factory :falsy_user, class: User do
