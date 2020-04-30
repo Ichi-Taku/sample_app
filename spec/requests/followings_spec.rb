@@ -37,4 +37,32 @@ RSpec.describe "Followings", type: :request do
       end
     end
   end
+
+  describe `#create` do
+    context `not use Ajax` do
+      it `adds followings` do
+        expect { post relationships_path, params: { followed_id: user3.id } }.to change { user1.following.count }.by(1)
+      end
+    end
+    context `user Ajax` do
+      it `adds followings` do
+        expect { post relationships_path, xhr: true, params: { followed_id: user3.id } }.to change { user1.following.count }.by(1)
+      end
+    end
+  end
+
+  describe `#destroy` do
+    let(:relationship) { user1.active_relationships.find_by(followed_id: user3.id) }
+    before { user1.follow(user3) }
+    context `not use Ajax` do
+      it `decrease followings` do
+        expect { delete relationship_path(relationship) }.to change { user1.following.count }.by(-1)
+      end
+    end
+    context `user Ajax` do
+      it `decrease followings` do
+        expect { delete relationship_path(relationship), xhr: true }.to change { user1.following.count }.by(-1)
+      end
+    end
+  end
 end
