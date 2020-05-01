@@ -20,6 +20,7 @@ gem 'therubyracer'
 gem 'jquery-ui-rails'
 
 group :development, :test do
+  gem 'rspec-rails', '~> 3.8'
   gem 'sqlite3', '1.3.13'
   gem 'byebug',  '9.0.6', platform: :mri
 end
@@ -37,6 +38,10 @@ group :test do
   gem 'minitest-reporters',       '1.1.14'
   gem 'guard',                    '2.16.2'
   gem 'guard-minitest',           '2.4.4'
+  gem 'capybara',                 '2.13'
+  gem 'webdrivers'
+  gem 'factory_bot_rails'
+  gem 'shoulda-matchers'
 end
 
 group :production do

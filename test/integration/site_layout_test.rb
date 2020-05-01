@@ -17,6 +17,8 @@ class SiteLayoutTest < ActionDispatch::IntegrationTest
     assert_select "title", full_title("Sign up")
   end
 
+  #RspecここまでOK
+
   test "login layout links" do
     log_in_as(@user)
     get root_path
